@@ -1,0 +1,70 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5yk21smgecpj"]
+
+[ext_resource type="Script" uid="uid://yw32x57dlfhe" path="res://Scripts/card.gd" id="1_57uvv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_57uvv"]
+font_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_pf1bt"]
+font_size = 10
+
+[node name="card2" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_57uvv")
+Level = 2
+Pickable = true
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 100.0
+color = Color(0.16685283, 0.16685283, 0.16685283, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_right = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CardTitle" type="Label" parent="Background/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Type"
+label_settings = SubResource("LabelSettings_57uvv")
+horizontal_alignment = 1
+
+[node name="CardImage" type="TextureRect" parent="Background/VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(70, 50)
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="CardLevel" type="Label" parent="Background/VBoxContainer"]
+layout_mode = 2
+text = "level"
+label_settings = SubResource("LabelSettings_pf1bt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Foreground" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 100.0
+color = Color(1.2219125, 0.7994788, 0.67132485, 0.39215687)
+
+[connection signal="gui_input" from="Background" to="." method="_on_background_gui_input"]
+[connection signal="gui_input" from="Foreground" to="." method="_on_background_gui_input"]
