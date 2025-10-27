@@ -31,11 +31,11 @@ func _ready() -> void:
 
 
 func _on_background_gui_input(event: InputEvent) -> void:
-	
-	if (picked == false and Pickable == true and event is InputEventMouseButton and event.is_pressed()):
+	if (!Pickable and event is InputEventMouseButton and event.is_pressed() and CardType == Enums.CardType.WEAPON):
+		GameManagement.FightMonster()
+	elif (picked == false and Pickable == true and event is InputEventMouseButton and event.is_pressed()):
 		GameManagement.HoldCard(self)
 	
 	elif (picked == true and event is InputEventMouseButton and event.is_pressed()):
-		
 		GameManagement.ReleaseCard()
 		

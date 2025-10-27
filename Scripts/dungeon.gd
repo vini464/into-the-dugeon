@@ -8,17 +8,16 @@ var CardTemplate = preload("res://Scenes/card_2.tscn")
 
 func _process(delta: float) -> void:
 	$deck/DeckSize.text = str(GameManagement.Deck.size())
+	$LifePoints/TextureRect/lifetotal.text = str(GameManagement.PlayerLife)
 	if (GameManagement.SkippedLastRoom and !GameManagement.EnteredRoom):
 		$RunButton.disabled = true
 	else:
 		$RunButton.disabled = false
 	
-	if (Room.get_children().size() <= 1):
-		GameManagement.NewRoom(self)
 
 func RemoveRoomCards():
 	print("removing cards")
-	var children = Room.get_children()
+	var children = Room.get_children().duplicate()
 	for child in children:
 		Room.remove_child(child)
 	
@@ -36,25 +35,33 @@ func SetRoomCards(cards : Array):
 	
 	print("done")
 
-func _on_lifepointd_mouse_entered() -> void:
-	print("mouse entered life")
-	pass # Replace with function body.
+func RemoveRoomCard(card : Card):
+	Room.remove_child(card)
 
+func SetWeapon(weapon : Card):
+	var children = $Weapon.get_children().duplicate()
+	if (children.size() > 0):
+		for child in children:
+			$Weapon.remove_child(child)
+	
+	$Weapon.add_child(weapon)
 
-func _on_lifepointd_mouse_exited() -> void:
-	print("mouse exited life")
-	pass # Replace with function body.
+func SetLastMonster(monster : Card):
+	RemoveLastMonster()
+	$LastMonster.add_child(monster)
 
-
-func _on_weapon_area_mouse_entered() -> void:
-	print("mouse entered weapon")
-	pass # Replace with function body.
-
-
-func _on_weapon_area_mouse_exited() -> void:
-	print("mouse exited weapon")
-	pass # Replace with function body.
-
-
+func RemoveLastMonster():
+	var children = $LastMonster.get_children().duplicate()
+	if (children.size() > 0):
+		for child in children:
+			$LastMonster.remove_child(child)
+			
 func _on_run_button_pressed() -> void:
 	GameManagement.SkipRoom()
+
+func _on_next_button_pressed() -> void:
+	GameManagement.NewRoom(self)
+
+func _on_life_points_gui_input(event: InputEvent) -> void:
+	if (event is InputEventMouseButton and event.is_pressed()):
+		GameManagement.UseSelectedCard()

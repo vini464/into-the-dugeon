@@ -1,17 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://dtnfkcdr0tyo8"]
+[gd_scene load_steps=5 format=3 uid="uid://dtnfkcdr0tyo8"]
 
 [ext_resource type="Script" uid="uid://cjhkwvevw6y1i" path="res://Scripts/dungeon.gd" id="1_dakn4"]
-[ext_resource type="PackedScene" uid="uid://bfibegpwntqgy" path="res://Scenes/card_slot.tscn" id="1_oavya"]
 [ext_resource type="Texture2D" uid="uid://dw4ketb5p1pjx" path="res://Assets/cardSlot.png" id="2_iqbxe"]
 [ext_resource type="Texture2D" uid="uid://b1q10src1qaul" path="res://Assets/cardBack.png" id="3_l3tba"]
 [ext_resource type="Texture2D" uid="uid://cle7olvpwhey1" path="res://Assets/lifepoints.png" id="4_iqbxe"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lt7kh"]
-size = Vector2(68, 96)
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5v1xs"]
-radius = 29.0
-height = 66.0
 
 [node name="Dungeon" type="Node2D"]
 script = ExtResource("1_dakn4")
@@ -20,21 +12,9 @@ script = ExtResource("1_dakn4")
 position = Vector2(578, 324)
 zoom = Vector2(2, 2)
 
-[node name="lastMonster" type="Sprite2D" parent="."]
-position = Vector2(383, 409)
-texture = ExtResource("2_iqbxe")
-
 [node name="graveyard" type="Sprite2D" parent="."]
 position = Vector2(687, 409)
 texture = ExtResource("2_iqbxe")
-
-[node name="WeaponSlot" parent="." instance=ExtResource("1_oavya")]
-position = Vector2(468, 409)
-
-[node name="weaponArea" type="Area2D" parent="WeaponSlot"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponSlot/weaponArea"]
-shape = SubResource("RectangleShape2D_lt7kh")
 
 [node name="deck" type="Sprite2D" parent="."]
 position = Vector2(357, 236)
@@ -45,26 +25,6 @@ offset_left = -20.0
 offset_top = 22.0
 offset_right = 20.0
 offset_bottom = 45.0
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Lifepoints" type="Sprite2D" parent="."]
-position = Vector2(580, 425)
-texture = ExtResource("4_iqbxe")
-
-[node name="lifepointd" type="Area2D" parent="Lifepoints"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Lifepoints/lifepointd"]
-position = Vector2(0, 3)
-rotation = 1.5707964
-shape = SubResource("CapsuleShape2D_5v1xs")
-
-[node name="lifeDisplay" type="Label" parent="Lifepoints"]
-offset_left = -19.0
-offset_top = -8.0
-offset_right = 21.0
-offset_bottom = 15.0
-text = "20"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -83,15 +43,62 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="NextButton" type="Button" parent="."]
+offset_left = 760.0
+offset_top = 243.0
+offset_right = 830.0
+offset_bottom = 274.0
+text = "Next"
+
 [node name="RunButton" type="Button" parent="."]
-offset_left = 322.0
-offset_top = 289.0
-offset_right = 392.0
-offset_bottom = 320.0
+offset_left = 758.0
+offset_top = 188.0
+offset_right = 828.0
+offset_bottom = 219.0
 text = "Run"
 
-[connection signal="mouse_entered" from="WeaponSlot/weaponArea" to="." method="_on_weapon_area_mouse_entered"]
-[connection signal="mouse_exited" from="WeaponSlot/weaponArea" to="." method="_on_weapon_area_mouse_exited"]
-[connection signal="mouse_entered" from="Lifepoints/lifepointd" to="." method="_on_lifepointd_mouse_entered"]
-[connection signal="mouse_exited" from="Lifepoints/lifepointd" to="." method="_on_lifepointd_mouse_exited"]
+[node name="LastMonster" type="ColorRect" parent="."]
+offset_left = 337.0
+offset_top = 360.0
+offset_right = 405.0
+offset_bottom = 457.0
+color = Color(0.53171283, 0.5317128, 0.53171283, 1)
+
+[node name="Weapon" type="ColorRect" parent="."]
+z_index = 1
+offset_left = 432.0
+offset_top = 360.0
+offset_right = 500.0
+offset_bottom = 457.0
+color = Color(0.23921569, 0.23921569, 0.23921569, 0.2901961)
+
+[node name="LifePoints" type="ColorRect" parent="."]
+offset_left = 549.0
+offset_top = 410.0
+offset_right = 605.0
+offset_bottom = 457.0
+color = Color(1, 1, 1, 0)
+
+[node name="TextureRect" type="TextureRect" parent="LifePoints"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_iqbxe")
+
+[node name="lifetotal" type="Label" parent="LifePoints/TextureRect"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 24.5
+offset_right = 52.0
+offset_bottom = 47.5
+text = "20"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="NextButton" to="." method="_on_next_button_pressed"]
 [connection signal="pressed" from="RunButton" to="." method="_on_run_button_pressed"]
+[connection signal="gui_input" from="Weapon" to="." method="_on_weapon_gui_input"]
+[connection signal="gui_input" from="LifePoints" to="." method="_on_life_points_gui_input"]

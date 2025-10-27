@@ -7,8 +7,11 @@ var EnteredRoom : bool
 var GameTurn : int
 var PlayerLife : int
 
+
 var dungeon : Dungeon
+var weapon : Card
 var holdingCard : Card
+var lastMonster : Card
 
 func _init() -> void:
 	newgame()
@@ -17,7 +20,7 @@ func _init() -> void:
 func newgame() -> void:
 	dungeon = null
 	holdingCard = null
-	PlayerLife = 0
+	PlayerLife = 20
 	GameTurn = 0
 	EnteredRoom = false
 	SkippedLastRoom = false
@@ -49,21 +52,21 @@ func newgame() -> void:
 func NewRoom(currentdungeon : Dungeon):
 	if (dungeon == null):
 		dungeon = currentdungeon
+	if (RoomCards.size() > 1):
+		return
 	while (RoomCards.size() < 4 and Deck.size() > 0):
 		var card = Deck.pop_front()
 		RoomCards.append(card)
-	
+	SkippedLastRoom = false
 	dungeon.RemoveRoomCards()
 	dungeon.SetRoomCards(RoomCards)
 
-
-
 func SkipRoom():
-	if (!SkippedLastRoom):
+	if (!SkippedLastRoom and RoomCards.size() == 4):
 		
 		while RoomCards.size() > 0:
 			Deck.append(RoomCards.pop_back())
-			NewRoom(dungeon)
+		NewRoom(dungeon)
 		SkippedLastRoom = true
 
 func HoldCard(card : Card) -> bool:
@@ -80,4 +83,60 @@ func ReleaseCard():
 	holdingCard.foreground.visible = false
 	holdingCard.picked = false
 	holdingCard = null
-	pass
+
+func UseSelectedCard():
+	if holdingCard == null || RoomCards.size() < 2:
+		return
+	holdingCard.picked = false
+	holdingCard.foreground.visible = false
+	match holdingCard.CardType:
+		Enums.CardType.MONSTER:
+			print("ouch")
+			PlayerLife -= holdingCard.Level
+			if (PlayerLife <= 0):
+				lose()
+		Enums.CardType.POTION:
+			print("glub")
+			PlayerLife += holdingCard.Level
+			if PlayerLife > 20:
+				PlayerLife = 20
+		Enums.CardType.WEAPON:
+			print("kachan")
+			weapon = holdingCard.duplicate()
+			weapon.Pickable = false
+			lastMonster = null
+			dungeon.SetWeapon(weapon)
+			dungeon.RemoveLastMonster()
+			
+	
+	removeHoldingCard()
+
+func FightMonster():
+	print("weapon: ", weapon)
+	if (RoomCards.size() < 2  || weapon == null || holdingCard == null):
+		return
+	if (holdingCard.CardType != Enums.CardType.MONSTER || (lastMonster != null and lastMonster.Level <= holdingCard.Level) ):
+		return
+	
+	var damage = holdingCard.Level - weapon.Level
+	if (damage > 0):
+		PlayerLife -= damage
+	if PlayerLife <= 0:
+		lose()
+	else:
+		lastMonster = holdingCard.duplicate()
+		lastMonster.Pickable = false
+		dungeon.SetLastMonster(lastMonster)
+		removeHoldingCard()
+
+func removeHoldingCard():
+	dungeon.RemoveRoomCard(holdingCard)
+	for card in RoomCards:
+		if card["id"] == holdingCard.Id:
+			RoomCards.erase(card)
+			break
+	holdingCard = null
+
+func lose():
+	print("you died!")
+	get_tree().quit()
