@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="IntoTheDugeon"
+run/main_scene="uid://dtnfkcdr0tyo8"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Enums="*res://Scripts/enums.gd"
-Signals="*res://Scripts/signals.gd"
 GameManagement="*res://Scripts/GameManagement.gd"
 
 [display]

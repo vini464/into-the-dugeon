@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://gs88iju04ay3"]
+
+[ext_resource type="Script" uid="uid://fgw4mh48etjo" path="res://Scripts/end_scene.gd" id="1_5pkqa"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_5rked"]
+font_size = 76
+
+[node name="EndScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5pkqa")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.41568628, 0.18431373, 0.11764706, 1)
+
+[node name="Label" type="Label" parent="ColorRect"]
+layout_mode = 0
+offset_left = 376.0
+offset_top = 116.0
+offset_right = 952.0
+offset_bottom = 263.0
+text = "End message"
+label_settings = SubResource("LabelSettings_5rked")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="ColorRect"]
+layout_mode = 0
+offset_left = 562.0
+offset_top = 331.0
+offset_right = 796.0
+offset_bottom = 424.0
+theme_override_font_sizes/font_size = 53
+text = "Retry"
+
+[connection signal="pressed" from="ColorRect/Button" to="." method="_on_button_pressed"]

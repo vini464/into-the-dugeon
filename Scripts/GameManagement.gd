@@ -1,5 +1,7 @@
 extends Node
 
+var endscene_packed = preload("res://Scenes/end_scene.tscn")
+
 var Deck = []
 var RoomCards = []
 var SkippedLastRoom : bool
@@ -15,6 +17,7 @@ var lastMonster : Card
 
 func _init() -> void:
 	newgame()
+	
 
 
 func newgame() -> void:
@@ -46,7 +49,10 @@ func newgame() -> void:
 			card["id"] = id
 			id += 1
 	Deck.shuffle()
-	
+
+func _process(_delta: float) -> void:
+	if (RoomCards.size() == 0 and Deck.size() == 0):
+		close("You Win!")
 
 
 func NewRoom(currentdungeon : Dungeon):
@@ -85,23 +91,20 @@ func ReleaseCard():
 	holdingCard = null
 
 func UseSelectedCard():
-	if holdingCard == null || RoomCards.size() < 2:
+	if holdingCard == null || (RoomCards.size() < 2 and Deck.size() > 0):
 		return
 	holdingCard.picked = false
 	holdingCard.foreground.visible = false
 	match holdingCard.CardType:
 		Enums.CardType.MONSTER:
-			print("ouch")
 			PlayerLife -= holdingCard.Level
 			if (PlayerLife <= 0):
-				lose()
+				close("You Lose!")
 		Enums.CardType.POTION:
-			print("glub")
 			PlayerLife += holdingCard.Level
 			if PlayerLife > 20:
 				PlayerLife = 20
 		Enums.CardType.WEAPON:
-			print("kachan")
 			weapon = holdingCard.duplicate()
 			weapon.Pickable = false
 			lastMonster = null
@@ -112,7 +115,6 @@ func UseSelectedCard():
 	removeHoldingCard()
 
 func FightMonster():
-	print("weapon: ", weapon)
 	if (RoomCards.size() < 2  || weapon == null || holdingCard == null):
 		return
 	if (holdingCard.CardType != Enums.CardType.MONSTER || (lastMonster != null and lastMonster.Level <= holdingCard.Level) ):
@@ -122,7 +124,7 @@ func FightMonster():
 	if (damage > 0):
 		PlayerLife -= damage
 	if PlayerLife <= 0:
-		lose()
+		close("you lose!")
 	else:
 		lastMonster = holdingCard.duplicate()
 		lastMonster.Pickable = false
@@ -137,6 +139,6 @@ func removeHoldingCard():
 			break
 	holdingCard = null
 
-func lose():
-	print("you died!")
-	get_tree().quit()
+func close(msg : String):
+	print(msg)
+	get_tree().change_scene_to_packed(endscene_packed)

@@ -5,6 +5,8 @@ extends Node2D
 @onready var Room = $roomBox/room
 var CardTemplate = preload("res://Scenes/card_2.tscn")
 
+func _ready() -> void:
+	GameManagement.NewRoom(self)
 
 func _process(delta: float) -> void:
 	$deck/DeckSize.text = str(GameManagement.Deck.size())
@@ -38,12 +40,15 @@ func SetRoomCards(cards : Array):
 func RemoveRoomCard(card : Card):
 	Room.remove_child(card)
 
-func SetWeapon(weapon : Card):
+func RemoveWeapon():
 	var children = $Weapon.get_children().duplicate()
 	if (children.size() > 0):
 		for child in children:
 			$Weapon.remove_child(child)
 	
+
+func SetWeapon(weapon : Card):
+	RemoveWeapon()
 	$Weapon.add_child(weapon)
 
 func SetLastMonster(monster : Card):
@@ -55,7 +60,7 @@ func RemoveLastMonster():
 	if (children.size() > 0):
 		for child in children:
 			$LastMonster.remove_child(child)
-			
+
 func _on_run_button_pressed() -> void:
 	GameManagement.SkipRoom()
 
@@ -65,3 +70,12 @@ func _on_next_button_pressed() -> void:
 func _on_life_points_gui_input(event: InputEvent) -> void:
 	if (event is InputEventMouseButton and event.is_pressed()):
 		GameManagement.UseSelectedCard()
+
+
+func _on_retry_pressed() -> void:
+	RemoveLastMonster()
+	RemoveRoomCards()
+	RemoveWeapon()
+	
+	GameManagement.newgame()
+	GameManagement.NewRoom(self)
